@@ -1,0 +1,247 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Eendracht / Concorde · prototype</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23121212'/%3E%3Crect x='6' y='8' width='7' height='16' fill='%23ffd84a'/%3E%3Crect x='19' y='8' width='7' height='16' fill='%23ef3340'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#14110f;--p:#211c18;--y:#ffd84a;--r:#ef3340;--k:#000;--l:#f3e7c9;--g:#3be38b;--m:#a99c86}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#3a2c18,var(--bg) 60%);color:#f6efe2;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:900px;margin:auto;padding:12px 12px 70px}
+h1{margin:.1em 0;font-size:30px}h1 span{color:var(--y)}h2{margin:.2em 0 .4em;font-size:20px}
+.flag{display:inline-flex;height:14px;vertical-align:middle}.flag i{width:7px;display:block}
+.card{background:rgba(33,28,24,.92);border:1px solid #4a3d2c;border-radius:14px;padding:14px;margin:10px 0}
+button,select,input{font:inherit}
+button{border:0;border-radius:10px;padding:11px 13px;background:#5a4526;color:#fff;font-weight:700;cursor:pointer}
+button.alt{background:#2c251e;border:1px solid #5a4a33}button.sel{outline:3px solid var(--y);background:#7a5a20}
+button:disabled{opacity:.4}
+.big{width:100%;font-size:18px;padding:15px;background:linear-gradient(90deg,#c9a227,var(--r));color:#fff}
+select,input[type=text]{width:100%;padding:10px;border-radius:9px;border:1px solid #5a4a33;background:#14110f;color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
+.muted{color:var(--m);font-size:13px}.slogan{font-style:italic;color:var(--y)}
+.hidden{display:none!important}
+.tabs{display:flex;gap:5px;position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0}
+.tabs button{flex:1;padding:10px 4px;font-size:14px}.tabs button.on{background:var(--y);color:#111}
+.tag{display:inline-block;font-size:12px;padding:3px 8px;border-radius:20px;background:#3b2f20;color:var(--y);margin-right:4px}
+.tag.fast{background:#4a1a1c;color:#ff9aa1}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.who{font-size:13px;letter-spacing:2px;font-weight:800;color:var(--y)}
+.pz svg{width:100%;height:auto;border-radius:10px;display:block}
+.lyr{font-family:Georgia,serif;font-size:17px;line-height:1.5;background:#f3e7c9;color:#2a2116;padding:12px;border-radius:10px}
+.prog{height:16px;border-radius:9px;background:#2c251e;overflow:hidden;border:1px solid #5a4a33}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--y),var(--r));transition:width .6s}
+.msgs{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.msg{padding:8px 10px;border-radius:10px;max-width:85%;font-size:15px}.msg.A{background:#5a4526;align-self:flex-start}.msg.B{background:#5a2226;align-self:flex-end}
+.msg img{max-width:180px;background:#fff;border-radius:6px;display:block}
+canvas#pad{width:100%;height:180px;background:#fff;border-radius:10px;touch-action:none;display:block}
+.emo{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}.emo button{padding:6px 0;font-size:22px;background:#2c251e}
+.ov{position:fixed;inset:0;background:rgba(10,8,6,.9);display:flex;align-items:center;justify-content:center;z-index:20;padding:14px}
+.ov .card{max-width:440px;width:100%}
+.arena{position:relative;height:300px;background:#2c251e;border-radius:12px;overflow:hidden;touch-action:manipulation}
+.arena .w{position:absolute;font-size:42px;line-height:1;cursor:pointer;user-select:none}
+.light{height:120px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;background:#4a1a1c}
+.light.go{background:#1e6b3d}
+.foot{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:11px;color:#8a7d68;padding:6px;background:linear-gradient(transparent,var(--bg) 40%)}
+.foot b{color:#c9b98f;letter-spacing:2px}
+@media(min-width:760px){.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}.split .pane{display:block!important}}
+</style></head><body><div class="wrap">
+
+<!-- START -->
+<section id="sStart">
+ <div style="margin-top:8px"><span class="flag"><i style="background:#000"></i><i style="background:#ffd84a"></i><i style="background:#ef3340"></i></span> <span class="muted">PROTOTYPE · 2 spelers op 1 toestel · 2 joueurs sur 1 appareil</span></div>
+ <h1>Eendracht <span>/</span> Concorde</h1>
+ <div class="slogan">Samen sterk. L'union fait la force.</div>
+ <div class="card"><p style="margin-top:0">Elke avond speel je samen met iemand uit een andere regio en een andere generatie. <b>Speler A</b> speelt in het Nederlands, <b>Joueur B</b> en français. Jullie zien elk een ander deel van de puzzel en mogen <b>niet vrij typen</b>: praat met tekeningen, emoji's, spraakberichten en een vertaler van 5 woorden.</p>
+ <div class="row"><div><div class="who">SPELER A (NL)</div><input id="nA" type="text" value="Mariette" data-t="nA"><select id="hA" data-t="hA"></select><select id="aA" data-t="aA"><option value="jong">jong (−30)</option><option value="oud" selected>ervaren (65+)</option></select></div>
+ <div><div class="who">JOUEUR B (FR)</div><input id="nB" type="text" value="Lucas" data-t="nB"><select id="hB" data-t="hB"></select><select id="aB" data-t="aB"><option value="jong" selected>jeune (−30)</option><option value="oud">expérimenté (65+)</option></select></div></div>
+ <p class="muted" id="pairInfo"></p>
+ <button class="big" data-t="start" onclick="startGame()">▶ Start partij · Commencer</button>
+ <button class="alt hidden" style="width:100%;margin-top:8px" id="benchBtn" data-t="bench" onclick="showBench()">🪑 Eendrachtbank vrijgespeeld!</button>
+ </div>
+ <div class="card"><h2>🇧🇪 Samen België inkleuren</h2><div id="mapStart"></div><div id="weekStart"></div></div>
+</section>
+
+<!-- GAME -->
+<section id="sGame" class="hidden">
+ <div class="row" style="align-items:center"><div><b id="gTitle">Puzzel 1/5</b> <span class="muted" id="gTries"></span></div><div style="text-align:right" class="muted" id="gScore"></div></div>
+ <div class="tabs"><button data-t="tabA" class="on" onclick="tab('A')">🅰 Speler A</button><button data-t="tabB" onclick="tab('B')">🅱 Joueur B</button><button data-t="tabM" onclick="tab('M')">💬 <span id="mCount">Praat</span></button><button data-t="tabK" onclick="tab('K')">🗺️ Kaart</button></div>
+ <div class="split">
+  <div class="pane" id="pA"><div class="card pz" id="cA"></div></div>
+  <div class="pane hidden" id="pB"><div class="card pz" id="cB"></div></div>
+ </div>
+ <div class="pane hidden" id="pM"><div class="card">
+  <div class="row" style="align-items:center"><div class="who">Afzender / Expéditeur:</div><button id="sdA" class="sel" data-t="sdA" onclick="setSender('A')">A</button><button id="sdB" class="alt" data-t="sdB" onclick="setSender('B')">B</button></div>
+  <p class="muted">Vrij typen mag niet. Pas d'écriture libre.</p>
+  <canvas id="pad" width="600" height="300"></canvas>
+  <div class="row" style="margin-top:6px"><button class="alt" onclick="clearPad()">🧽 Wissen</button><button data-t="sendDraw" onclick="sendDraw()">✏️ Stuur tekening</button></div>
+  <h3 style="margin:12px 0 6px">Emoji</h3><div class="emo" id="emo"></div>
+  <h3 style="margin:12px 0 6px">Vertaler / Traducteur · <span id="trLeft" data-t="trLeft">5</span> woorden over</h3>
+  <div class="row"><select id="trSel" data-t="trSel"></select><button data-t="trGo" onclick="doTranslate()">🔤 Vertaal</button></div>
+  <h3 style="margin:12px 0 6px">Spraak / Voix</h3>
+  <div class="row"><button id="recBtn" data-t="rec" onclick="toggleRec()">🎙️ Opnemen</button></div><div class="muted" id="recInfo"></div>
+  <div class="msgs" id="msgs"></div>
+ </div></div>
+ <div class="pane hidden" id="pK"><div class="card"><h2>Gezamenlijke kaart</h2><div id="mapGame"></div><div id="weekGame"></div></div></div>
+</section>
+
+<!-- END -->
+<section id="sEnd" class="hidden"><div class="card" id="endCard"></div><div class="card"><div id="mapEnd"></div><div id="weekEnd"></div></div></section>
+
+<!-- BENCH -->
+<section id="sBench" class="hidden"><div class="card" id="benchCard"></div></section>
+</div>
+<div id="ov" class="ov hidden"><div class="card" id="ovC"></div></div>
+<div class="foot">een idee met steun van <b>WINDROSE TECHNOLOGY</b> · prototype</div>
+<script>
+const $=s=>document.querySelector(s);
+const LS={get(k,d){try{return JSON.parse(localStorage.getItem('eend_'+k))??d}catch(e){return d}},set(k,v){localStorage.setItem('eend_'+k,JSON.stringify(v))}};
+// ---------- data ----------
+const TOWNS={Antwerpen:[51.22,4.40],Gent:[51.05,3.72],Brugge:[51.21,3.22],Kortrijk:[50.83,3.26],Leuven:[50.88,4.70],Hasselt:[50.93,5.34],Brussel:[50.85,4.35],'Waver / Wavre':[50.72,4.61],'Luik / Liège':[50.63,5.57],'Namen / Namur':[50.47,4.87],Charleroi:[50.41,4.44],'Bergen / Mons':[50.45,3.95],'Doornik / Tournai':[50.61,3.39],'Aarlen / Arlon':[49.68,5.81]};
+const STATIONS={'Brussel-Zuid / Bruxelles-Midi':[50.8357,4.3365],'Leuven':[50.8812,4.7157],'Mechelen':[51.0177,4.4829],'Halle':[50.7339,4.2402],'Edingen / Enghien':[50.6964,4.0378],'Ottignies':[50.6716,4.5703],'Namen / Namur':[50.4686,4.8623],'Aat / Ath':[50.6262,3.7783],'Gent-Sint-Pieters':[51.0357,3.7106],'Antwerpen-Centraal':[51.2172,4.4211],'Luik-Guillemins / Liège':[50.6245,5.5667],'Charleroi-Centraal':[50.4045,4.4384]};
+// schematic provinces (not to scale)
+const PROV=[['WVL','West-Vl.',8,40,62,72],['OVL','Oost-Vl.',74,40,58,62],['ANT','Antwerpen',136,8,74,64],['LIM','Limburg',214,38,58,72],['VBR','Vl.-Brabant',74,106,136,30],['BRU','Brussel',122,110,28,22],['HAI','Hainaut',30,140,98,56],['BWA','Brabant w.',132,140,58,30],['LIE','Liège',194,114,86,70],['NAM','Namur',130,174,72,56],['LUX','Luxembourg',204,188,66,66]];
+const DICT=[['huis','maison'],['kerk','église'],['toren','tour'],['rivier','fleuve'],['rots','rocher'],['paard','cheval'],['brug','pont'],['plein','place'],['lied','chanson'],['slapen','dormir'],['ster','étoile'],['moeder','mère'],['klok','cloche'],['ja','oui'],['nee','non'],['links','gauche'],['rechts','droite'],['noorden','nord'],['zuiden','sud'],['zee','mer'],['tram','tram'],['kind','enfant'],['winkel','magasin'],['brand','incendie'],['negen','neuf'],['acht','huit'],['bol','sphère'],['ijzer','fer'],['snel','vite'],['samen','ensemble'],['goed','bien'],['fout','faux']];
+const EMO='👍👎❓❗🔔⛪🏰🌊⛰️🐴🏠🌉🎵😴⭐👩‍👧🚋🏖️🧒🔥🏬⚛️9️⃣8️⃣⬅️➡️⬆️⬇️😂❤️🤝🎉'.match(/(\p{Extended_Pictographic}|\d)\uFE0F?\u20E3?(\u200D\p{Extended_Pictographic}\uFE0F?)*/gu);
+
+// ---------- SVG art ----------
+const svgBrugge=`<svg viewBox="0 0 320 220"><rect width="320" height="220" fill="#bfe0f5"/><rect y="150" width="320" height="70" fill="#c8b79a"/>
+<g fill="#8d4a2b" stroke="#5a2e1a"><path d="M10 150V95l10-12 10 12 10-12 10 12v55z"/><path d="M60 150V100l12-14 12 14v50z"/><path d="M220 150V92l10-12 10 12 10-12 10 12 10-12 10 12v58z"/><path d="M280 150V100l14-16 14 16v50z" fill="#a85a34"/></g>
+<g fill="#fff8d8"><rect x="20" y="110" width="8" height="12"/><rect x="38" y="110" width="8" height="12"/><rect x="68" y="112" width="8" height="12"/><rect x="232" y="108" width="8" height="12"/><rect x="252" y="108" width="8" height="12"/><rect x="290" y="112" width="8" height="12"/></g>
+<g fill="#b3925f" stroke="#6b5232"><rect x="110" y="90" width="90" height="60"/><rect x="135" y="40" width="40" height="52"/><path d="M140 40V12h30v28z"/><path d="M144 12l11-10 11 10z" fill="#6b5232"/></g>
+<circle cx="155" cy="60" r="9" fill="#fff" stroke="#333"/><path d="M155 60V54M155 60h5" stroke="#333" stroke-width="2"/>
+<g fill="#5a3b1e"><rect x="125" y="115" width="10" height="35" rx="5"/><rect x="175" y="115" width="10" height="35" rx="5"/><rect x="150" y="118" width="10" height="32" rx="5"/></g>
+<g transform="translate(36,160)"><rect x="40" y="10" width="40" height="18" rx="4" fill="#333"/><circle cx="48" cy="32" r="7" fill="none" stroke="#222" stroke-width="3"/><circle cx="74" cy="32" r="7" fill="none" stroke="#222" stroke-width="3"/><path d="M0 26q5-22 18-22 10 0 12 8l8 4-3 6-8-3-4 8 2 12h-6l-1-10-12 0-2 10h-6z" fill="#6b4a2b"/></g>
+<g transform="translate(230,168)"><rect x="-6" y="-30" width="14" height="40" fill="#555"/><rect x="-14" y="-40" width="30" height="12" fill="#666"/></g>
+<rect y="200" width="320" height="20" fill="#5e93b8"/><path d="M0 206q20-4 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="#9cc6e2" fill="none"/></svg>`;
+const svgDinant=`<svg viewBox="0 0 320 220"><rect width="320" height="220" fill="#cfe6f5"/>
+<path d="M150 0L320 0 320 150 230 150 210 120 200 80 175 60 160 30z" fill="#9b9b8f" stroke="#6e6e64"/><path d="M180 20h100v26H180z" fill="#7e7d72"/><path d="M190 20v-8h10v8m20 0v-8h10v8m20 0v-8h10v8" fill="#7e7d72" stroke="#6e6e64"/>
+<g fill="#d8cdb8" stroke="#7a6a50"><path d="M0 150V100l14-12 14 12v50zM28 150V108l14-14 14 14v42zM60 150V102l12-10 12 10v48zM200 150V112l12-10 12 10v38z"/></g>
+<g fill="#c9bfa6" stroke="#6b5c44"><rect x="100" y="90" width="70" height="60"/><path d="M100 90l35-22 35 22z" fill="#5b5b62"/><rect x="122" y="56" width="26" height="40"/></g>
+<path d="M135 56c-14 0-16-12-8-20 4-4 5-10 8-14 3 4 4 10 8 14 8 8 6 20-8 20z" fill="#3d4a55"/><path d="M135 22V8" stroke="#333" stroke-width="2"/>
+<rect y="150" width="320" height="16" fill="#b5a88e"/><rect y="166" width="320" height="54" fill="#4f86ad"/>
+<g stroke="#8a6b46" stroke-width="5"><path d="M0 162h320"/></g><g fill="#7a5a38"><rect x="40" y="166" width="8" height="54"/><rect x="140" y="166" width="8" height="54"/><rect x="240" y="166" width="8" height="54"/></g>
+<path d="M0 190q30-5 60 0t60 0 60 0 60 0 60 0" stroke="#a5cbe5" fill="none"/>
+<g transform="translate(260,184)"><path d="M-30 0h60l-8 12h-44z" fill="#fff"/><rect x="-16" y="-10" width="30" height="10" fill="#e44"/></g></svg>`;
+function pickMap(towns,side){ // schematic map with clickable towns
+ let s=`<svg viewBox="0 0 290 260"><rect width="290" height="260" rx="10" fill="#1d2a22"/>`;
+ PROV.forEach(p=>s+=`<rect x="${p[2]}" y="${p[3]}" width="${p[4]}" height="${p[5]}" rx="6" fill="#2f4536" stroke="#4d6b55"/>`);
+ towns.forEach(t=>s+=`<g style="cursor:pointer" onclick="choose('${side}','${t.id}')" data-t="map${side}-${t.id}"><circle cx="${t.x}" cy="${t.y}" r="9" fill="${pick[side]==t.id?'#ffd84a':'#ef3340'}" stroke="#fff" stroke-width="2"/><text x="${t.x+11}" y="${t.y+4}" fill="#fff" font-size="11" font-weight="700">${side=='A'?t.nl:t.fr}</text></g>`);
+ return s+'</svg>';
+}
+const MTOWNS=[{id:'bru',nl:'Brugge',fr:'Bruges',x:36,y:56},{id:'ieper',nl:'Ieper',fr:'Ypres',x:22,y:96},{id:'lier',nl:'Lier',fr:'Lierre',x:168,y:52},{id:'mons',nl:'Bergen',fr:'Mons',x:66,y:176},{id:'din',nl:'Dinant',fr:'Dinant',x:166,y:214},{id:'dur',nl:'Durbuy',fr:'Durbuy',x:226,y:190}];
+
+// melodies (traditional, public domain). [midi, beats]
+const MEL={vj:[[60,1],[62,1],[64,1],[60,1],[60,1],[62,1],[64,1],[60,1],[64,1],[65,1],[67,2],[64,1],[65,1],[67,2],[67,.5],[69,.5],[67,.5],[65,.5],[64,1],[60,1],[67,.5],[69,.5],[67,.5],[65,.5],[64,1],[60,1],[60,1],[55,1],[60,2],[60,1],[55,1],[60,2]],
+ kj:[[60,1],[60,1],[67,1],[67,1],[69,1],[69,1],[67,2],[65,1],[65,1],[64,1],[64,1],[62,1],[62,1],[60,2],[67,1],[67,1],[65,1],[65,1],[64,1],[64,1],[62,2],[67,1],[67,1],[65,1],[65,1],[64,1],[64,1],[62,2]]};
+let AC;function playMel(k){AC=AC||new (window.AudioContext||window.webkitAudioContext)();let t=AC.currentTime+.05,bt=.42;
+ MEL[k].forEach(([n,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=440*Math.pow(2,(n-69)/12);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d*bt*.95);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d*bt);t+=d*bt});}
+const SONGOPTS=[{id:'vj',nl:'Vader Jacob',fr:'Frère Jacques'},{id:'kj',nl:'Altijd is Kortjakje ziek',fr:'Ah ! vous dirai-je, maman'},{id:'sb',nl:'Zie ginds komt de stoomboot',fr:'Voici venir le bateau'},{id:'br',nl:'De Brabançonne',fr:'La Brabançonne'}];
+
+// ---------- puzzles ----------
+const P=[
+ {id:'brugge',kind:'photo',tag:'samen',ans:'bru',
+  A:()=>`<div class="who">SPELER A · JIJ ZIET</div><h2>Een oud dorpsplein</h2>${svgBrugge}<p class="muted">Beschrijf dit plein aan je partner: belforttoren, trapgevels, koetsen, een vaart... Joueur B heeft de kaart. Kies daarna samen dezelfde stad.</p>`,
+  B:()=>`<div class="who">JOUEUR B · TU VOIS</div><h2>La carte</h2><p class="muted">Ton partenaire voit une vieille photo d'une place. Laquelle de ces villes ? Touchez la ville.</p>${pickMap(MTOWNS,'B')}`,
+  opts:MTOWNS,info:'Brugge: de Markt met het Belfort (83 m) en de paardenkoetsen.'},
+ {id:'dinant',kind:'photo',tag:'samen',ans:'din',
+  A:()=>`<div class="who">SPELER A · JIJ ZIET</div><h2>Een stadje aan het water</h2>${svgDinant}<p class="muted">Rotswand, citadel, een kerk met een peervormige torenspits, een rivier... Kies samen dezelfde stad.</p>`,
+  B:()=>`<div class="who">JOUEUR B · TU VOIS</div><h2>La carte</h2><p class="muted">Ton partenaire voit une vieille carte postale. Quelle ville ?</p>${pickMap(MTOWNS,'B')}`,
+  opts:MTOWNS,info:'Dinant: de collegiale kerk met haar peervormige spits onder de citadel, aan de Maas.'},
+ {id:'song1',kind:'song',tag:'oude kennis',ans:'vj',song:'vj',opts:SONGOPTS,
+  A:()=>`<div class="who">SPELER A · JIJ HOORT</div><h2>Een oud liedje</h2><button class="big" data-t="play" onclick="playMel('vj')">🎵 Speel fragment</button><p class="muted">Neurie het, teken het of beschrijf het met emoji. Welk lied is het?</p>`,
+  B:()=>`<div class="who">JOUEUR B · TU AS LES PAROLES</div><div class="lyr">… dormez-vous ? Dormez-vous ?<br>Sonnez les matines, sonnez les matines,<br>Ding, dang, dong ! Ding, dang, dong !</div><p class="muted">Mettez-vous d'accord sur le titre.</p>`,info:'Vader Jacob / Frère Jacques: traditioneel canon, in heel België gezongen.'},
+ {id:'song2',kind:'song',tag:'oude kennis',ans:'kj',song:'kj',opts:SONGOPTS,
+  A:()=>`<div class="who">SPELER A · JIJ HOORT</div><h2>Een oud liedje</h2><button class="big" data-t="play" onclick="playMel('kj')">🎵 Speel fragment</button><p class="muted">Welk lied is het? (In het Nederlands zingt men er andere woorden op.)</p>`,
+  B:()=>`<div class="who">JOUEUR B · TU AS LES PAROLES</div><div class="lyr">… Ce qui cause mon tourment ?<br>Papa veut que je raisonne<br>Comme une grande personne…</div><p class="muted">Mettez-vous d'accord sur le titre.</p>`,info:'Dezelfde 18e-eeuwse melodie: "Ah ! vous dirai-je, maman" = "Altijd is Kortjakje ziek".'},
+ {id:'atomium',kind:'quiz',tag:'oude kennis',ans:'9',
+  opts:[{id:'6',nl:'6',fr:'6'},{id:'8',nl:'8',fr:'8'},{id:'9',nl:'9',fr:'9'},{id:'12',nl:'12',fr:'12'}],
+  A:()=>`<div class="who">SPELER A · VRAAG</div><h2>Expo 58</h2><p>Uit hoeveel bollen bestaat het Atomium, gebouwd voor de Wereldtentoonstelling van 1958 in Brussel?</p>`,
+  B:()=>`<div class="who">JOUEUR B · INDICE</div><p>L'Atomium représente une maille d'un cristal de fer agrandie 165 milliards de fois : un cube avec une sphère à chaque coin… et une au centre.</p>`,info:'Het Atomium heeft 9 bollen: 8 hoeken van een kubus + 1 in het midden.'},
+ {id:'kusttram',kind:'quiz',tag:'oude kennis',ans:'dp',
+  opts:[{id:'dp',nl:'De Panne – Knokke',fr:'La Panne – Knokke'},{id:'ob',nl:'Oostende – Brugge',fr:'Ostende – Bruges'},{id:'nb',nl:'Nieuwpoort – Blankenberge',fr:'Nieuport – Blankenberge'},{id:'kz',nl:'Koksijde – Zeebrugge',fr:'Coxyde – Zeebrugge'}],
+  A:()=>`<div class="who">SPELER A · VRAAG</div><h2>Tramlijnen</h2><p>Tussen welke twee kustgemeenten rijdt de Kusttram, een van de langste tramlijnen ter wereld?</p>`,
+  B:()=>`<div class="who">JOUEUR B · INDICE</div><p>Environ 67 km, presque de la frontière française jusqu'à près de la frontière néerlandaise.</p>`,info:'De Kusttram rijdt ca. 67 km van De Panne tot Knokke.'},
+ {id:'pagadder',kind:'quiz',tag:'oude kennis',ans:'kind',
+  opts:[{id:'kind',nl:'een kind',fr:'un enfant'},{id:'haven',nl:'een havenarbeider',fr:'un docker'},{id:'bakker',nl:'een bakker',fr:'un boulanger'},{id:'par',nl:'een paraplu',fr:'un parapluie'}],
+  A:()=>`<div class="who">SPELER A · VRAAG</div><h2>Dialect</h2><p>Wat betekent het Antwerpse woord <b>"pagadder"</b>?</p>`,
+  B:()=>`<div class="who">JOUEUR B · INDICE</div><p>À Anvers, on le dit d'un petit qui court partout dans la maison. 🧒</p>`,info:'"Pagadder" is Antwerps voor een (klein) kind, een deugniet.'},
+ {id:'inno',kind:'quiz',tag:'oude kennis',ans:'inno',
+  opts:[{id:'inno',nl:"L'Innovation",fr:"L'Innovation"},{id:'gb',nl:'Grand Bazar',fr:'Grand Bazar'},{id:'sarma',nl:'Sarma',fr:'Sarma'},{id:'bm',nl:'Au Bon Marché',fr:'Au Bon Marché'}],
+  A:()=>`<div class="who">SPELER A · VRAAG</div><h2>Oude winkels</h2><p>Welk Brussels warenhuis in de Nieuwstraat brandde af op 22 mei 1967?</p>`,
+  B:()=>`<div class="who">JOUEUR B · INDICE</div><p>Rue Neuve, 1967. Son nom évoque la nouveauté. 🔥🏬</p>`,info:"De brand in warenhuis L'Innovation (1967) was de zwaarste brand in de Belgische naoorlogse geschiedenis."},
+ {id:'wafel',kind:'fast',tag:'snelle vingers',mg:'wafel'},
+ {id:'licht',kind:'fast',tag:'snelle vingers',mg:'licht'},
+];
+const ROT=[['brugge','song1','atomium','wafel','pagadder'],['dinant','song2','kusttram','licht','inno'],['brugge','song2','inno','wafel','atomium'],['dinant','song1','pagadder','licht','kusttram']];
+
+// ---------- state ----------
+let G=null,pick={A:null,B:null},sender='A';
+function pairKey(){return [$('#nA').value.trim().toLowerCase(),$('#nB').value.trim().toLowerCase()].sort().join('+')}
+function pairGames(){return (LS.get('pairs',{}))[pairKey()]||0}
+function updPair(){const n=pairGames();$('#pairInfo').textContent=`Samen gespeeld / joué ensemble: ${n} ${n==1?'partij':'partijen'} · Eendrachtbank bij 5`;$('#benchBtn').classList.toggle('hidden',n<5)}
+function init(){const o=Object.keys(TOWNS).map(t=>`<option>${t}</option>`).join('');$('#hA').innerHTML=o;$('#hB').innerHTML=o;$('#hA').value='Antwerpen';$('#hB').value='Namen / Namur';
+ $('#trSel').innerHTML=DICT.map((d,i)=>`<option value="n${i}">NL ${d[0]} → FR</option>`).join('')+DICT.map((d,i)=>`<option value="f${i}">FR ${d[1]} → NL</option>`).join('');
+ $('#emo').innerHTML=EMO.map(e=>`<button onclick="sendMsg('${e}')">${e}</button>`).join('');
+ ['nA','nB'].forEach(i=>$('#'+i).addEventListener('input',updPair));updPair();drawMaps();initPad();}
+function show(id){['sStart','sGame','sEnd','sBench'].forEach(s=>$('#'+s).classList.toggle('hidden',s!=id));scrollTo(0,0)}
+function startGame(){const n=pairGames();G={list:ROT[n%ROT.length].map(id=>P.find(p=>p.id==id)),i:0,solved:0,tries:3,tr:5,msgs:0};$('#msgs').innerHTML='';$('#trLeft').textContent=5;show('sGame');renderP();tab('A')}
+function tab(w){['A','B','M','K'].forEach(k=>{$('#p'+k).classList.toggle('hidden',k!=w);document.querySelector(`[data-t=tab${k}]`).classList.toggle('on',k==w)});if(w=='K')drawMaps()}
+function renderP(){const p=G.list[G.i];pick={A:null,B:null};$('#gTitle').textContent=`Puzzel ${G.i+1}/5`;$('#gScore').textContent=`✅ ${G.solved} opgelost`;
+ const tg=`<span class="tag ${p.tag=='snelle vingers'?'fast':''}">${p.tag=='snelle vingers'?'⚡ snelle vingers':p.tag=='oude kennis'?'📜 oude kennis':'🤝 samen'}</span>`;
+ if(p.kind=='fast'){$('#gTries').textContent='';const h=tg+`<h2>${p.mg=='wafel'?'Wafelregen!':'Groen licht!'}</h2><p>${p.mg=='wafel'?'Tik samen 15 wafels weg in 12 seconden. Ensemble : 15 gaufres en 12 secondes!':'Wacht op groen en tik dan allebei op je knop, 3 keer na elkaar. Attendez le vert, puis tapez tous les deux!'}</p><p class="muted">Hier wint snelheid: jonge vingers helpen.</p><button class="big" data-t="mgstart" onclick="startMG('${p.mg}')">Start</button>`;$('#cA').innerHTML=h;$('#cB').innerHTML=h;return}
+ $('#gTries').textContent=`· ${G.tries} pogingen`;
+ $('#cA').innerHTML=tg+p.A()+optsHtml(p,'A');$('#cB').innerHTML=tg+p.B()+(p.kind=='photo'?selInfo('B'):optsHtml(p,'B'));}
+function optsHtml(p,s){return `<div class="opts">${p.opts.map(o=>`<button class="${pick[s]==o.id?'sel':'alt'}" data-t="opt${s}-${o.id}" onclick="choose('${s}','${o.id}')">${s=='A'?o.nl:o.fr}</button>`).join('')}</div>${selInfo(s)}`}
+function selInfo(s){const o=pick[s]?G.list[G.i].opts.find(x=>x.id==pick[s]):null;return `<p class="muted">${s=='A'?'Jouw keuze':'Ton choix'}: <b>${o?(s=='A'?o.nl:o.fr):'—'}</b> · ${pick[s=='A'?'B':'A']?(s=='A'?'partner heeft gekozen ✔':'partenaire a choisi ✔'):(s=='A'?'partner kiest nog…':'partenaire choisit…')}</p>`}
+function choose(s,id){const p=G.list[G.i];pick[s]=id;$('#cA').innerHTML=$('#cA').innerHTML;const tg=$('#cA .tag').outerHTML;$('#cA').innerHTML=tg+p.A()+optsHtml(p,'A');$('#cB').innerHTML=tg+p.B()+(p.kind=='photo'?selInfo('B'):optsHtml(p,'B'));
+ if(pick.A&&pick.B){if(pick.A!=pick.B){overlay(`<h2>🤔 Niet eens / Pas d'accord</h2><p>Jullie kozen iets anders. Overleg via 💬 en kies opnieuw.</p>`,'Verder',()=>{pick={A:null,B:null};renderP()});}
+  else if(pick.A==p.ans)solved(true,p.info);else{G.tries--;if(G.tries<=0)solved(false,p.info);else overlay(`<h2>❌ Samen fout</h2><p>Jullie waren het eens, maar het klopt niet. Nog ${G.tries} pogingen.</p>`,'Opnieuw',()=>{pick={A:null,B:null};renderP()})}}}
+function solved(ok,info){if(ok){G.solved++;colorRegion()}overlay(`<h2>${ok?'🎉 Opgelost! Résolu !':'Helaas…'}</h2><p>${info||''}</p>${ok?'<p class="muted">Een nieuw stukje België kleurt in op de kaart.</p>':''}`,'Volgende ▶',next)}
+function next(){G.i++;G.tries=3;if(G.i>=5)endGame();else{renderP();tab('A')}}
+function overlay(h,b,f){$('#ovC').innerHTML=h+`<button class="big" data-t="ovok">${b}</button>`;$('#ov').classList.remove('hidden');$('#ovC [data-t=ovok]').onclick=()=>{$('#ov').classList.add('hidden');f&&f()}}
+// ---------- map / week ----------
+function colorRegion(){const c=LS.get('colored',[]);const free=PROV.filter(p=>!c.includes(p[0]));if(free.length)c.push(free[0][0]);else c.splice(0,c.length);LS.set('colored',c);LS.set('mySolved',LS.get('mySolved',0)+1)}
+function mapSvg(){const c=LS.get('colored',[]);let s=`<svg viewBox="0 0 290 260" style="width:100%"><rect width="290" height="260" rx="10" fill="#1d1916"/>`;
+ PROV.forEach(p=>{const on=c.includes(p[0]);s+=`<rect x="${p[2]}" y="${p[3]}" width="${p[4]}" height="${p[5]}" rx="6" fill="${on?(['WVL','OVL','ANT','LIM','VBR'].includes(p[0])?'#ffd84a':p[0]=='BRU'?'#fff':'#ef3340'):'#3a322a'}" stroke="#6b5a44"/><text x="${p[2]+p[4]/2}" y="${p[3]+p[5]/2+4}" text-anchor="middle" font-size="${p[0]=='BRU'?7:10}" font-weight="700" fill="${on?'#111':'#a99c86'}">${p[1]}</text>`});
+ s+=`<path d="M8 138 Q100 132 150 138 T282 112" stroke="#fff" stroke-dasharray="4 4" fill="none" opacity=".6"/><text x="10" y="134" font-size="9" fill="#ddd">taalgrens / frontière linguistique</text>`;
+ return s+`</svg><p class="muted">${c.length}/${PROV.length} regio's ingekleurd (schematische kaart, niet op schaal)</p>`}
+function weekHtml(){const day=Math.floor(Date.now()/864e5),wk=Math.floor((day+3)/7);const base=6000+((wk*7919)%2500)+((day+3)%7)*350;const tot=base+LS.get('mySolved',0),goal=10000,pct=Math.min(100,tot/goal*100);
+ return `<h3 style="margin:10px 0 4px">Weekdoel heel België</h3><div class="prog"><i style="width:${pct}%"></i></div><p class="muted">${tot.toLocaleString('nl-BE')} / ${goal.toLocaleString('nl-BE')} puzzels samen opgelost. Beloning bij 100%: <b style="color:#ffd84a">🎶 gratis concert op de taalgrens</b>.<br><i>Prototype: landelijke teller is lokaal gesimuleerd.</i></p>`}
+function drawMaps(){['Start','Game','End'].forEach(k=>{$('#map'+k).innerHTML=mapSvg();$('#week'+k).innerHTML=weekHtml()})}
+// ---------- minigames ----------
+const MG={};
+function startMG(k){if(k=='wafel'){let hit=0,t=12;$('#ovC').innerHTML=`<h2>🧇 <span id="wh">0</span>/15 · <span id="wt">12</span>s</h2><div class="arena" id="ar"></div>`;$('#ov').classList.remove('hidden');
+  const spawn=()=>{const a=$('#ar');if(!a)return;const w=document.createElement('div');w.className='w';w.textContent='🧇';w.dataset.t='waffle';w.style.left=Math.random()*80+'%';w.style.top=Math.random()*80+'%';w.onpointerdown=()=>{w.remove();hit++;$('#wh').textContent=hit;if(hit>=15)fin(true)};a.appendChild(w);setTimeout(()=>w.remove(),1600)};
+  MG.si=setInterval(spawn,330);MG.ti=setInterval(()=>{t--;$('#wt').textContent=t;if(t<=0)fin(hit>=15)},1000);for(let i=0;i<3;i++)spawn();
+  function fin(ok){clearInterval(MG.si);clearInterval(MG.ti);if(MG.done)return;MG.done=1;$('#ov').classList.add('hidden');solved(ok,`Jullie tikten ${hit} wafels weg.`)}MG.done=0;}
+ else{let round=0,ok=0,go=false,tA=0,tB=0,t0=0;$('#ovC').innerHTML=`<h2>Ronde <span id="lr">1</span>/3</h2><div class="light" id="li">Wacht… Attendez…</div><div class="row" style="margin-top:10px"><button class="big" style="height:90px" data-t="tapA" id="bA">A</button><button class="big" style="height:90px" data-t="tapB" id="bB">B</button></div><p class="muted" id="lm">Allebei binnen 1 seconde na groen.</p>`;$('#ov').classList.remove('hidden');
+  const arm=()=>{go=false;tA=tB=0;$('#li').className='light';$('#li').textContent='Wacht… Attendez…';MG.lt=setTimeout(()=>{go=true;t0=performance.now();$('#li').className='light go';$('#li').textContent='NU! MAINTENANT!';MG.lo=setTimeout(()=>end(false),1000)},1200+Math.random()*1500)};
+  const tap=w=>{if(!go){$('#lm').textContent='Te vroeg! Trop tôt!';return}if(w=='A')tA=1;else tB=1;if(tA&&tB){clearTimeout(MG.lo);end(true)}};
+  const end=r=>{go=false;if(r)ok++;round++;$('#lm').textContent=r?'✔ Samen op tijd!':'✖ Te traag';if(round>=3){$('#ov').classList.add('hidden');solved(ok>=2,`${ok}/3 rondes samen op tijd.`)}else{$('#lr').textContent=round+1;setTimeout(arm,700)}};
+  $('#bA').onpointerdown=()=>tap('A');$('#bB').onpointerdown=()=>tap('B');MG.state=()=>go;arm();}}
+// ---------- communication ----------
+function setSender(s){sender=s;$('#sdA').className=s=='A'?'sel':'alt';$('#sdB').className=s=='B'?'sel':'alt'}
+function addMsg(html){const d=document.createElement('div');d.className='msg '+sender;d.innerHTML=`<small>${sender=='A'?'A':'B'}:</small> `+html;$('#msgs').prepend(d);G&&(G.msgs++,$('#mCount').textContent='Praat ('+G.msgs+')')}
+function sendMsg(e){addMsg(`<span style="font-size:26px">${e}</span>`)}
+let ctx,drawing=false;function initPad(){const c=$('#pad');ctx=c.getContext('2d');ctx.lineWidth=6;ctx.lineCap='round';ctx.strokeStyle='#222';const pos=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]};
+ c.onpointerdown=e=>{drawing=true;const[x,y]=pos(e);ctx.beginPath();ctx.moveTo(x,y)};c.onpointermove=e=>{if(!drawing)return;const[x,y]=pos(e);ctx.lineTo(x,y);ctx.stroke()};c.onpointerup=c.onpointerleave=()=>drawing=false}
+function clearPad(){ctx.clearRect(0,0,600,300)}
+function sendDraw(){addMsg(`<img src="${$('#pad').toDataURL()}">`);clearPad()}
+function doTranslate(){if(G.tr<=0){$('#trLeft').textContent='0 — op! épuisé!';return}const v=$('#trSel').value,i=+v.slice(1),d=DICT[i];G.tr--;$('#trLeft').textContent=G.tr;addMsg(v[0]=='n'?`🔤 <b>${d[0]}</b> = <b>${d[1]}</b>`:`🔤 <b>${d[1]}</b> = <b>${d[0]}</b>`)}
+let rec=null,chunks=[];async function toggleRec(){if(rec){rec.stop();return}
+ if(!navigator.mediaDevices||!window.MediaRecorder){$('#recInfo').textContent='Spraakberichten worden op dit toestel niet ondersteund. Gebruik tekeningen en emoji.';return}
+ try{const st=await navigator.mediaDevices.getUserMedia({audio:true});rec=new MediaRecorder(st);chunks=[];rec.ondataavailable=e=>chunks.push(e.data);
+  rec.onstop=()=>{st.getTracks().forEach(t=>t.stop());const u=URL.createObjectURL(new Blob(chunks,{type:rec.mimeType}));addMsg(`🎙️ <audio controls src="${u}" style="max-width:200px"></audio>`);rec=null;$('#recBtn').textContent='🎙️ Opnemen'};
+  rec.start();$('#recBtn').textContent='⏹️ Stop & stuur';setTimeout(()=>rec&&rec.state=='recording'&&rec.stop(),15000);$('#recInfo').textContent='Max 15 seconden. Neurie gerust het liedje!';}
+ catch(e){$('#recInfo').textContent='Geen toegang tot de microfoon. Gebruik tekeningen en emoji.'}}
+// ---------- end / bench ----------
+function endGame(){const pr=LS.get('pairs',{}),k=pairKey();pr[k]=(pr[k]||0)+1;LS.set('pairs',pr);const n=pr[k];drawMaps();
+ $('#endCard').innerHTML=`<h2>Partij voorbij · Partie terminée</h2><p style="font-size:20px">✅ ${G.solved}/5 puzzels samen opgelost</p><p>${$('#nA').value} & ${$('#nB').value}: al <b>${n}</b> ${n==1?'partij':'partijen'} samen.</p>${n>=5?`<button class="big" data-t="bench" onclick="showBench()">🪑 Eendrachtbank vrijgespeeld!</button>`:`<p class="muted">Nog ${5-n} partij(en) tot de Eendrachtbank.</p>`}<button class="alt" style="width:100%;margin-top:8px" data-t="again" onclick="show('sStart');updPair();drawMaps()">Nieuwe partij · Rejouer</button>`;show('sEnd')}
+function hav(a,b){const R=6371,r=x=>x*Math.PI/180,dl=r(b[0]-a[0]),dn=r(b[1]-a[1]);const h=Math.sin(dl/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function showBench(){const a=TOWNS[$('#hA').value],b=TOWNS[$('#hB').value];
+ // choose the station minimising the difference between the two trips (and total)
+ let best=null;for(const[n,c]of Object.entries(STATIONS)){const da=hav(a,c),db=hav(b,c),sc=Math.abs(da-db)+.5*(da+db);if(!best||sc<best.sc)best={n,da,db,sc}}
+ $('#benchCard').innerHTML=`<div class="who">VRIJGESPEELD · DÉBLOQUÉ</div><h2>🪑 De Eendrachtbank</h2><p>${$('#nA').value} (${$('#hA').value}) en ${$('#nB').value} (${$('#hB').value}) speelden 5 keer samen. Tijd om elkaar echt te ontmoeten!</p>
+ <div class="card" style="background:#f3e7c9;color:#2a2116;text-align:center"><div style="font-size:13px;letter-spacing:2px">STATION HALVERWEGE · GARE À MI-CHEMIN</div><div style="font-size:26px;font-weight:800" data-t="station">${best.n}</div><div>🪑 Eendrachtbank · Banc de la Concorde</div><div class="muted" style="color:#6b5a44">± ${Math.round(best.da)} km voor ${$('#nA').value} · ± ${Math.round(best.db)} km pour ${$('#nB').value} (vogelvlucht)</div></div>
+ <div class="row"><select id="hA2" onchange="$('#hA').value=this.value;showBench()">${$('#hA').innerHTML}</select><select id="hB2" onchange="$('#hB').value=this.value;showBench()">${$('#hB').innerHTML}</select></div>
+ <p class="muted">Prototype: geen echte afspraakmodule. In een echte versie kiezen beide spelers een datum en bevestigen ze de afspraak in de app.</p><button class="alt" style="width:100%" data-t="benchBack" onclick="show('sStart');updPair()">Terug</button>`;
+ $('#hA2').value=$('#hA').value;$('#hB2').value=$('#hB').value;show('sBench')}
+init();
+</script></body></html>
